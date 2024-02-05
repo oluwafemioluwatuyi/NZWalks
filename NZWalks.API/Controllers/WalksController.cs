@@ -42,11 +42,12 @@ namespace NZWalks.API.Controllers
 
         }
         //Get walks
-        //GET: /api/walks?filterOn =Name
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        //GET: /api/walks?filterOn =Name$filterQuery = track&sortBy=Name&isAscending=true&pageNumber=1&pagesize=10
+        [HttpGet] 
+        public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
+            [FromQuery] string? sortBy, [FromQuery] bool?isAscending, int pageNumber = 1, int pageSize = 1000)
         {
-            var walksDomainModel = await walkRepository.GetAllAsync();
+            var walksDomainModel = await walkRepository.GetAllAsync(filterOn, filterQuery, sortBy, isAscending?? true,  pageNumber, pageSize);
 
             //convert model to dto
 
