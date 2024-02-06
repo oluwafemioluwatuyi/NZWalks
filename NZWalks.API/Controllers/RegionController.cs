@@ -4,34 +4,41 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using NZWalks.API.CustomActionFilter;
 using NZWalks.API.Data;
 using NZWalks.API.DTO;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Repositories;
+using System.Text.Json;
 
 namespace NZWalks.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+   
     public class RegionController : ControllerBase
 
     {
         private readonly NZWalksDbContext dbContext;
         private readonly IRegionRepository regionRepository;
         private readonly IMapper mapper;
+        private readonly ILogger<RegionController> logger;
 
-        public RegionController(NZWalksDbContext dbContext, IRegionRepository regionRepository, IMapper mapper )
+        public RegionController(NZWalksDbContext dbContext, IRegionRepository regionRepository,
+            IMapper mapper, ILogger<RegionController> logger )
         {
             this.dbContext = dbContext;
             this.regionRepository = regionRepository;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            logger.LogInformation("GetAll Regions Action Method was invoked");
+            
             // Get data from database - Domain models
             var regionsDomain = await regionRepository.GetAllAsync();
 
@@ -48,7 +55,10 @@ namespace NZWalks.API.Controllers
                     //RegionImageUrl = regionDomain.RegionImageUrl,
                 //});
             //}
+
+
            var regionsDto =  mapper.Map<List<RegionDto>>(regionsDomain);
+            logger.LogInformation($"Finished GetAll Regions {JsonSerializer.Serialize(regionsDomain)}");
             return Ok(regionsDto);
 
         }

@@ -6,10 +6,20 @@ using NZWalks.API.Repositories;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+var logger = new LoggerConfiguration()
+      .WriteTo.Console()
+      .WriteTo.File("Logs/NZWalks_Log.txt", rollingInterval: RollingInterval.Minute)
+       .MinimumLevel.Information()
+       .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
