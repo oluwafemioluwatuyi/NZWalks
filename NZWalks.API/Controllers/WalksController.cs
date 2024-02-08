@@ -47,8 +47,11 @@ namespace NZWalks.API.Controllers
         public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
             [FromQuery] string? sortBy, [FromQuery] bool?isAscending, int pageNumber = 1, int pageSize = 1000)
         {
+            
             var walksDomainModel = await walkRepository.GetAllAsync(filterOn, filterQuery, sortBy, isAscending?? true,  pageNumber, pageSize);
+            //Create an exception
 
+            throw new Exception("This is a new exception"); 
             //convert model to dto
 
             return Ok(mapper.Map<List<WalkDto>>(walksDomainModel));
